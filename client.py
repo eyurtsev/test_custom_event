@@ -35,7 +35,8 @@ def make_client_call() -> list:
 
 async def main():
     tasks = []
-    for _ in range(2):
+    # Parallelize the client calls
+    for _ in range(10):
         tasks.append(asyncio.to_thread(make_client_call))
     results = await asyncio.gather(*tasks)
 
