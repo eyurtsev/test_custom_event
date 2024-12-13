@@ -3,6 +3,7 @@
 This agent returns a predefined response without using an actual LLM.
 """
 
+import asyncio
 import time
 import uuid
 from datetime import datetime
@@ -15,7 +16,7 @@ from agent.state import State
 
 
 def slow_sync_call():
-    time.sleep(5)
+    time.time(1)
     return "result"
 
 
@@ -34,7 +35,11 @@ async def my_node(state: State, config: RunnableConfig):
         },
         config=config,
     )
+    # Don't do this! It's blocking the event loop completely killing
+    # parallelism in the server!
     slow_sync_call()
+    # Correct way to call blocking call
+    # await asyncio.to_thread(slow_sync_call)
     toc = time.time()
     await adispatch_custom_event(
         "my_event",

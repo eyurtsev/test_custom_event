@@ -4,12 +4,14 @@ from datetime import datetime
 
 from langgraph_sdk import get_sync_client
 
+# Langgraph dev
 client = get_sync_client(url="http://localhost:2024")
+# Langgraph up
+# client = get_sync_client(url="http://localhost:8123")
 
 
 def make_client_call() -> list:
     events = []
-
     thread = client.threads.create()
     thread_id = thread["thread_id"]
 
@@ -36,13 +38,14 @@ def make_client_call() -> list:
 async def main():
     tasks = []
     # Parallelize the client calls
-    for _ in range(10):
+    for _ in range(100):
         tasks.append(asyncio.to_thread(make_client_call))
     results = await asyncio.gather(*tasks)
+    print(f'Tested a total of len(results)={len(results)} calls')
 
     for result in results:
-        if len(result) != 2:
-            raise ValueError(f"Expected 2 events got {result}")
+        if result[0]["idx"] != 1:
+            raise AssertionError("Missing first event!")
     print("All good")
 
 
