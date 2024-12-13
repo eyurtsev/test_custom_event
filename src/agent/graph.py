@@ -3,11 +3,9 @@
 This agent returns a predefined response without using an actual LLM.
 """
 
+import time
 import uuid
 from datetime import datetime
-
-import asyncio
-import time
 
 from langchain_core.callbacks import adispatch_custom_event
 from langchain_core.runnables import RunnableConfig
@@ -19,9 +17,6 @@ from agent.state import State
 def slow_sync_call():
     time.sleep(5)
     return "result"
-
-
-# Non blocking call
 
 
 async def my_node(state: State, config: RunnableConfig):
