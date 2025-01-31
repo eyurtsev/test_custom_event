@@ -11,19 +11,21 @@ from datetime import datetime
 from langchain_core.callbacks import adispatch_custom_event
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import StateGraph
+from langgraph.types import StreamWriter
 
 from agent.state import State
 
 
 def slow_sync_call():
-    time.time(1)
+    time.sleep(0.1)
     return "result"
 
 
-async def my_node(state: State, config: RunnableConfig):
+async def my_node(state: State, config: RunnableConfig, writer: StreamWriter):
     """Each node does work."""
     tic = time.time()
     id_ = str(uuid.uuid4())
+    writer("hello")
     await adispatch_custom_event(
         "my_event",
         {
